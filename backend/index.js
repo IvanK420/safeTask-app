@@ -1,43 +1,46 @@
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
-require('dotenv').config(); // Charge les variables du fichier .env
+require('dotenv').config();
+
+// Importation de la BDD et des routes
+const { sequelize } = require('./models');
+const authRoutes = require('./routes/auth');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// ==========================================
-// MIDDLEWARES DE SÉCURITÉ & CONFIGURATION (Validation CP 1)
-// ==========================================
-
-// 1. Protection des en-têtes HTTP
-app.use(helmet()); 
-
-// 2. Contrôle des accès CORS (Restreint l'accès uniquement à votre futur Front React)
-app.use(cors({
-    origin: 'http://localhost:5173', // Port par défaut de Vite
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    credentials: true
-}));
-
-// 3. Analyse syntaxique du corps des requêtes (remplace body-parser)
+// Middlewares globaux
+app.use(helmet());
+app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
 app.use(express.json());
 
-// ==========================================
-// ROUTE DE TEST / SANTÉ DE L'API
-// ==========================================
+// Synchronisation de la base de données SQLite (Crée le fichier et les tables automatiquement)
+sequelize.sync({ alter: true })
+    .then(() => console.log('[DATABASE] Base de données SQLite synchronisée avec succès.'))
+    .catch((err) => console.error('[DATABASE] Erreur de synchronisation BDD :', err));
+
+// Liaison des routes d'authentification
+app.use('/api/auth', authRoutes);
+
+// Route de diagnostic
 app.get('/api/health', (req, res) => {
-    try {
-        res.status(200).json({ 
-            status: 'success', 
-            message: 'Le serveur SafeTask répond correctement.' 
-        });
-    } catch (error) {
-        res.status(500).json({ status: 'error', message: 'Erreur interne du serveur' });
-    }
+    res.status(200).json({ status: 'success', message: 'API opérationnelle.' });
 });
 
-// Lancement du serveur
+// ====================================================================
+// MIDDLEWARE GLOBAL DE GESTION DES ERREURS (Style Défensif - CP 3)
+// ====================================================================
+app.use((err, req, res, next) => {
+    console.error('[ERROR LOG] :', err.stack); // Log complet uniquement visible côté serveur
+    
+    // Le serveur renvoie une structure d'erreur propre, sans jamais divulguer les détails internes ou SQL au client
+    res.status(500).json({
+        status: 'error',
+        message: 'Une erreur interne est survenue sur le serveur.'
+    });
+});
+
 app.listen(PORT, () => {
-    console.log(`[SERVER] Serveur sécurisé démarré sur : http://localhost:${PORT}`);
+    console.log(`[SERVER] Serveur démarré sur : http://localhost:${PORT}`);
 });
