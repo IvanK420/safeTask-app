@@ -4,7 +4,7 @@ module.exports = (req, res, next) => {
     try {
         // 1. Récupération du header Authorization (Format attendu : "Bearer <TOKEN>")
         const authHeader = req.headers['authorization'];
-        const token = authHeader && authHeader.split(' ')[2];
+        const token = authHeader && authHeader.split(' ')[1];
 
         if (!token) {
             return res.status(401).json({ error: 'Accès refusé. Jeton d\'authentification manquant.' });
