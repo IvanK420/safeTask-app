@@ -1,12 +1,20 @@
 import axios from 'axios';
 
-// Configuration d'une instance réutilisable
 const API = axios.create({
-    baseURL: 'http://localhost:5000/api', // URL de votre backend Express
-    timeout: 5000, // Coupe la requête si le serveur ne répond pas après 5s (Sécurité)
-    headers: {
-        'Content-Type': 'application/json'
+    baseURL: 'http://localhost:5000/api',
+    timeout: 5000,
+    headers: { 'Content-Type': 'application/json' }
+});
+
+// Intercepteur : Attache automatiquement le jeton de sécurité s'il existe
+API.interceptors.request.use((config) => {
+    const token = localStorage.getItem('token');
+    if (token) {
+        config.headers['Authorization'] = `Bearer ${token}`;
     }
+    return config;
+}, (error) => {
+    return Promise.reject(error);
 });
 
 export default API;
