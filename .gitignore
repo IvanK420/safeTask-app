@@ -1,0 +1,56 @@
+# ====================================================================
+# CONFIGURATION GITIGNORE GLOBALE — PROJET SAFETASK (REACT / EXPRESS / SQLITE)
+# ====================================================================
+
+# 1. Dépendances (Ne jamais versionner les packages installés)
+node_modules/
+**/node_modules/
+
+# 2. Fichiers de logs et de crash
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# 3. Environnement et Secrets (CRUCIAL POUR LA SÉCURITÉ - VALIDATION CP 1)
+# Bloque le téléversement des clés secrètes et des mots de passe sur GitHub
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+/backend/.env
+
+# 4. Base de données locale SQLite (VALIDATION CP 3)
+# Évite d'écraser la base de données d'un collaborateur ou de divulguer des données en production
+*.sqlite
+*.sqlite3
+*.db
+*.db-journal
+*.db-wal
+/backend/database.sqlite
+
+# 5. Dossiers de Build / Production (Générés automatiquement)
+/frontend/dist/
+dist/
+build/
+
+# 6. Rapports de Tests et Couverture de code
+coverage/
+/.nyc_output/
+
+# 7. Configurations des éditeurs de code et IDE
+.vscode/
+!.vscode/extensions.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+
+# 8. Fichiers systèmes (macOS et Windows)
+.DS_Store
+Thumbs.db
+Desktop.ini
