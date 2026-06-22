@@ -22,7 +22,9 @@ sequelize.sync({ alter: true })
 
 // Liaison des routes d'authentification
 app.use('/api/auth', authRoutes);
-
+// Liaison des routes de gestion des tâches (toutes protégées par le middleware d'authentification)
+const taskRoutes = require('./routes/tasks');
+app.use('/api/tasks', taskRoutes);
 // Route de diagnostic
 app.get('/api/health', (req, res) => {
     res.status(200).json({ status: 'success', message: 'API opérationnelle.' });
