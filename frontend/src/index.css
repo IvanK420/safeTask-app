@@ -15,13 +15,13 @@
   /* Couleurs de texte */
   --text-primary: #4A5568;
   --text-secondary: #718096;
-  --text-muted: #A0AEC0;
+  --text-muted: #7A4EE0;;
   --text-heading: #2D3748;
 
   /* Accents pastel */
-  --accent-lavender: #A78BFA;
+  --accent-lavender: #7A4EE0;
   --accent-lavender-dark: #8B5CF6;
-  --accent-sky: #7DD3FC;
+  --accent-sky: #5BB8E8;
   --accent-mint: #86EFAC;
   --accent-rose: #FDA4AF;
   --accent-yellow: #FDE047;
@@ -55,6 +55,8 @@
   --danger-bg: rgba(239, 68, 68, 0.1);
   --success: #15803D;
   --warning: #A16207;
+
+  --ink-soft: #6B7280;
 }
 
 body {

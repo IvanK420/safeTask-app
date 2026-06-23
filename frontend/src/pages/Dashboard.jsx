@@ -108,7 +108,7 @@ const Dashboard = () => {
                 </nav>
                 <div className="sidebar-foot">
                     Connecté en tant que<br />
-                    <span style={{ color: '#EAF3EF', fontWeight: 600 }}>{getUserEmail()}</span>
+                    <span style={{ color: 'var(--text-secondary)', fontWeight: 600 }}>{getUserEmail()}</span>
                 </div>
             </aside>
 
