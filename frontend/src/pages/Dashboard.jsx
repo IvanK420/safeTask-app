@@ -9,9 +9,6 @@ const Dashboard = () => {
     const [tasks, setTasks] = useState([]);
     const [newTaskTitle, setNewTaskTitle] = useState('');
     const [error, setError] = useState('');
-    
-    // Minuteur de session JWT (dynamique)
-    const [remainingSeconds, setRemainingSeconds] = useState(119 * 60 + 42); // Calqué sur ton mockup
 
     // Extraction sécurisée de l'email depuis le jeton JWT cryptographique
     const getUserEmail = () => {
@@ -107,13 +104,11 @@ const Dashboard = () => {
                 </div>
                 <nav className="nav">
                     <a className="active">📋 Mes tâches</a>
-                    <a>👤 Mon profil</a>
-                    <a>🔒 Sécurité du compte</a>
                     <a onClick={logout} style={{ cursor: 'pointer' }}>↩ Déconnexion</a>
                 </nav>
                 <div className="sidebar-foot">
                     Connecté en tant que<br />
-                    <span style={{ color: '#EAF3EF', fontWeight: 600 }}>{getUserEmail()}</span>
+                    <span style={{ color: 'var(--text-secondary)', fontWeight: 600 }}>{getUserEmail()}</span>
                 </div>
             </aside>
 
@@ -128,7 +123,6 @@ const Dashboard = () => {
                         <span className="dot"></span>
                         <div className="session-text">
                             <b>Session active</b>
-                            <span className="ttl">{formatCountdown()}</span>
                         </div>
                     </div>
                 </div>
