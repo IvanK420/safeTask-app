@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import API from '../api/axios';
+import '../index.css';
 
 const Register = () => {
     const [email, setEmail] = useState('');
@@ -33,64 +34,64 @@ const Register = () => {
     };
 
     return (
-        <main style={{ maxWidth: '400px', margin: '2rem auto', padding: '1rem' }}>
-            <h2>Créer un compte SafeTask</h2>
-            
-            {message && (
-                <div role="alert" style={{ color: isError ? 'red' : 'green', marginBottom: '1rem' }}>
-                    {message}
-                </div>
-            )}
+        <div className="auth-container">
+            <main className="auth-card">
+                <h2>Créer un compte SafeTask</h2>
+                
+                {message && (
+                    <div role="alert" className={`alert ${isError ? 'alert-danger' : 'alert-success'}`}>
+                        {message}
+                    </div>
+                )}
 
-            {/* Structure sémantique conforme RGAA */}
-            <form onSubmit={handleSubmit} noValidate>
-                <div style={{ marginBottom: '1rem' }}>
-                    <label htmlFor="email">Adresse e-mail :</label>
-                    <input 
-                        type="email" 
-                        id="email" 
-                        value={email} 
-                        onChange={(e) => setEmail(e.target.value)}
-                        required 
-                        style={{ width: '100%', padding: '0.5rem', marginTop: '0.25rem' }}
-                    />
-                </div>
+                {/* Structure sémantique conforme RGAA */}
+                <form onSubmit={handleSubmit} noValidate>
+                    <div className="form-group">
+                        <label htmlFor="email">Adresse e-mail</label>
+                        <input 
+                            type="email" 
+                            id="email" 
+                            value={email} 
+                            onChange={(e) => setEmail(e.target.value)}
+                            required 
+                            placeholder="votre.email@adresse.com"
+                        />
+                    </div>
 
-                <div style={{ marginBottom: '1rem' }}>
-                    <label htmlFor="password">Mot de passe :</label>
-                    <input 
-                        type="password" 
-                        id="password" 
-                        value={password} 
-                        onChange={(e) => setPassword(e.target.value)}
-                        required 
-                        style={{ width: '100%', padding: '0.5rem', marginTop: '0.25rem' }}
-                    />
-                </div>
+                    <div className="form-group">
+                        <label htmlFor="password">Mot de passe</label>
+                        <input 
+                            type="password" 
+                            id="password" 
+                            value={password} 
+                            onChange={(e) => setPassword(e.target.value)}
+                            required 
+                            placeholder="••••••••"
+                        />
+                    </div>
 
-                {/* Case à cocher obligatoire de conformité RGPD */}
-                <div style={{ marginBottom: '1rem', display: 'flex', alignItems: 'flex-start' }}>
-                    <input 
-                        type="checkbox" 
-                        id="rgpd" 
-                        checked={rgpdConsent} 
-                        onChange={(e) => setRgpdConsent(e.target.checked)}
-                        aria-required="true"
-                    />
-                    <label htmlFor="rgpd" style={{ marginLeft: '0.5rem', fontSize: '0.9rem' }}>
-                        J'accepte que SafeTask stocke mes données d'identification conformément à la politique de confidentialité.
-                    </label>
-                </div>
+                    {/* Case à cocher obligatoire de conformité RGPD */}
+                    <div className="checkbox-group">
+                        <input 
+                            type="checkbox" 
+                            id="rgpd" 
+                            checked={rgpdConsent} 
+                            onChange={(e) => setRgpdConsent(e.target.checked)}
+                            aria-required="true"
+                        />
+                        <label htmlFor="rgpd">
+                            J'accepte que SafeTask stocke mes données d'identification conformément à la politique de confidentialité.
+                        </label>
+                    </div>
 
-                <button type="submit" style={{ width: '100%', padding: '0.75rem', backgroundColor: '#007bff', color: 'white', border: 'none', cursor: 'pointer' }}>
-                    S'inscrire
-                </button>
-            </form>
+                    <button type="submit">S'inscrire</button>
+                </form>
 
-            <p style={{ marginTop: '1rem', textAlign: 'center' }}>
-                Déjà inscrit ? <Link to="/login">Connectez-vous ici</Link>
-            </p>
-        </main>
+                <p>
+                    Déjà inscrit ? <Link to="/login">Connectez-vous ici</Link>
+                </p>
+            </main>
+        </div>
     );
 };
 
