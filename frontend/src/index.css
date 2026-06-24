@@ -1056,3 +1056,8 @@ code {
   color: #15803D;
   border: 1px solid var(--accent-mint);
 }
+ .description {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-top: 2px;
+    }

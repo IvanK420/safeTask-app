@@ -54,3 +54,6 @@ coverage/
 .DS_Store
 Thumbs.db
 Desktop.ini
+
+# 9. Fichiers de configuration spécifiques à l'environnement de développement
+dev.bat

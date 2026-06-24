@@ -8,6 +8,7 @@ const Dashboard = () => {
     const { logout, token } = useAuth();
     const [tasks, setTasks] = useState([]);
     const [newTaskTitle, setNewTaskTitle] = useState('');
+    const [newTaskDescription, setNewTaskDescription] = useState('');
     const [error, setError] = useState('');
 
     // Extraction sécurisée de l'email depuis le jeton JWT cryptographique
@@ -34,12 +35,6 @@ const Dashboard = () => {
     // 2. Gestion du cycle de vie : Chargement initial et minuteur de session
     useEffect(() => {
         fetchTasks();
-
-        const interval = setInterval(() => {
-            setRemainingSeconds(prev => (prev > 0 ? prev - 1 : 0));
-        }, 1000);
-
-        return () => clearInterval(interval);
     }, []);
 
     // Formatage cosmétique du compte à rebours
@@ -56,8 +51,9 @@ const Dashboard = () => {
         if (!newTaskTitle.trim()) return;
 
         try {
-            await API.post('/tasks', { title: newTaskTitle.trim() });
+            await API.post('/tasks', { title: newTaskTitle.trim() , description: newTaskDescription.trim() });
             setNewTaskTitle('');
+            setNewTaskDescription('');
             fetchTasks(); // Mutation de l'état UI
         } catch (err) {
             setError('Erreur d\'autorisation lors de l\'ajout de la tâche.');
@@ -154,6 +150,14 @@ const Dashboard = () => {
                                 aria-label="Titre de la nouvelle tâche"
                                 required
                             />
+                            <input
+                                type="text"
+                                placeholder="Description de la tâche…"
+                                value={newTaskDescription}
+                                onChange={(e) => setNewTaskDescription(e.target.value)}
+                                aria-label="Description de la nouvelle tâche"
+                                required
+                            />
                             <button type="submit">+ Ajouter</button>
                         </form>
 
@@ -164,7 +168,7 @@ const Dashboard = () => {
                             ) : (
                                 tasks.map(task => (
                                     <div className="task" key={task.id}>
-                                        <div className="title">{task.title}</div>
+                                        <div className="title">{task.title} {task.description && <span className="description">{task.description}</span>}</div>
                                         <span className="owner">{getUserEmail().split('@')[0]}</span>
                                         <button 
                                             className={`badge ${classMap[task.status] || 'todo'}`}
@@ -189,7 +193,7 @@ const Dashboard = () => {
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
                                 <path d="M12 2l8 3v6c0 5-3.5 8.5-8 11-4.5-2.5-8-6-8-11V5l8-3z" stroke="#1F6F5C" strokeWidth="1.6"/>
                             </svg>
-                            Chaque requête est filtrée côté serveur par <code style={{ fontFamily: 'var(--mono)', background: '#F1F4F2', padding: '1px 5px', borderRadius: '4px' }}>UserId</code> — aucune tâche d'un autre utilisateur n'est jamais renvoyée.
+                            Vos tâches rien qu'a vous 
                         </div>
                     </div>
 
