@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import API from '../api/axios';
 import WeatherWidget from '../components/WeatherWidget';
+import TaskModal from '../components/TaskModal';
 import '../index.css';
 
 const Dashboard = () => {
@@ -10,6 +11,7 @@ const Dashboard = () => {
     const [newTaskTitle, setNewTaskTitle] = useState('');
     const [newTaskDescription, setNewTaskDescription] = useState('');
     const [error, setError] = useState('');
+    const [selectedTask, setSelectedTask] = useState(null);
 
     // Extraction sécurisée de l'email depuis le jeton JWT cryptographique
     const getUserEmail = () => {
@@ -37,13 +39,7 @@ const Dashboard = () => {
         fetchTasks();
     }, []);
 
-    // Formatage cosmétique du compte à rebours
-    const formatCountdown = () => {
-        const h = Math.floor(remainingSeconds / 3600).toString().padStart(2, "0");
-        const m = Math.floor((remainingSeconds % 3600) / 60).toString().padStart(2, "0");
-        const s = Math.floor(remainingSeconds % 60).toString().padStart(2, "0");
-        return `JWT expire dans ${h}:${m}:${s}`;
-    };
+ 
 
     // 3. Action métier : Création d'une ressource
     const handleCreateTask = async (e) => {
@@ -67,7 +63,8 @@ const Dashboard = () => {
 
         try {
             await API.put(`/tasks/${task.id}`, { ...task, status: nextStatus });
-            fetchTasks();
+            await fetchTasks();
+            setSelectedTask((prev) => prev?.id === task.id ? { ...task, status: nextStatus } : prev);
         } catch (err) {
             setError('Modification du statut refusée par le serveur.');
         }
@@ -167,18 +164,24 @@ const Dashboard = () => {
                                 <p style={{ fontSize: '14px', color: 'var(--ink-soft)', padding: '10px 4px' }}>Aucune tâche enregistrée pour le moment.</p>
                             ) : (
                                 tasks.map(task => (
-                                    <div className="task" key={task.id}>
+                                    <div
+                                        className="task"
+                                        key={task.id}
+                                        onClick={() => setSelectedTask(task)}
+                                        style={{ cursor: 'pointer' }}
+                                        title="Cliquer pour voir les détails"
+                                    >
                                         <div className="title">{task.title} {task.description && <span className="description">{task.description}</span>}</div>
                                         <span className="owner">{getUserEmail().split('@')[0]}</span>
-                                        <button 
+                                        <button
                                             className={`badge ${classMap[task.status] || 'todo'}`}
-                                            onClick={() => handleToggleStatus(task)}
+                                            onClick={(e) => { e.stopPropagation(); handleToggleStatus(task); }}
                                         >
                                             {task.status}
                                         </button>
-                                        <button 
-                                            className="del" 
-                                            onClick={() => handleDeleteTask(task.id)} 
+                                        <button
+                                            className="del"
+                                            onClick={(e) => { e.stopPropagation(); handleDeleteTask(task.id); }}
                                             title="Supprimer la tâche"
                                         >
                                             ✕
@@ -201,6 +204,16 @@ const Dashboard = () => {
                     <WeatherWidget />
                 </div>
             </main>
+
+            {selectedTask && (
+                <TaskModal
+                    task={selectedTask}
+                    onClose={() => setSelectedTask(null)}
+                    onToggleStatus={handleToggleStatus}
+                    onDelete={handleDeleteTask}
+                    ownerName={getUserEmail().split('@')[0]}
+                />
+            )}
         </div>
     );
 };
