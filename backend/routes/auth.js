@@ -2,12 +2,22 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const rateLimit = require('express-rate-limit');
 const { User } = require('../models');
+
+// ANSSI PA-079 : limiter les tentatives d'authentification (brute force)
+const authLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // fenêtre de 15 minutes
+    max: 10,                   // 10 tentatives max par IP
+    standardHeaders: true,     // renvoie les headers RateLimit-* standard
+    legacyHeaders: false,
+    message: { error: 'Trop de tentatives. Veuillez réessayer dans 15 minutes.' }
+});
 
 // ====================================================================
 // ROUTE : Inscription (POST /api/auth/register)
 // ====================================================================
-router.post('/register', async (req, res, next) => {
+router.post('/register', authLimiter, async (req, res, next) => {
     try {
         const { email, password } = req.body;
 
@@ -45,7 +55,7 @@ router.post('/register', async (req, res, next) => {
 // ====================================================================
 // ROUTE : Connexion (POST /api/auth/login)
 // ====================================================================
-router.post('/login', async (req, res, next) => {
+router.post('/login', authLimiter, async (req, res, next) => {
     try {
         const { email, password } = req.body;
 
