@@ -75,3 +75,38 @@ describe('POST /api/auth/login', () => {
         expect(res.body).toHaveProperty('error');
     });
 });
+
+describe('Rate limiting', () => {
+    test('429 — bloque /login après 10 tentatives depuis la même IP', async () => {
+        let lastStatus;
+        for (let i = 0; i < 11; i++) {
+            const res = await request(app)
+                .post('/api/auth/login')
+                .set('X-Forwarded-For', '10.0.0.1')
+                .send({ email: 'brute@test.com', password: 'mauvais' });
+            lastStatus = res.status;
+        }
+        expect(lastStatus).toBe(429);
+    });
+
+    test('429 — bloque /register après 10 tentatives depuis la même IP', async () => {
+        let lastStatus;
+        for (let i = 0; i < 11; i++) {
+            const res = await request(app)
+                .post('/api/auth/register')
+                .set('X-Forwarded-For', '10.0.0.2')
+                .send({ email: `brute${i}@ratelimit.com`, password: 'motdepasse123' });
+            lastStatus = res.status;
+        }
+        expect(lastStatus).toBe(429);
+    });
+
+    test('200 — une IP différente n\'est pas bloquée', async () => {
+        const res = await request(app)
+            .post('/api/auth/login')
+            .set('X-Forwarded-For', '10.0.0.3')
+            .send({ email: 'user@test.com', password: 'motdepasse123' });
+        expect(res.status).toBe(200);
+        expect(res.body).toHaveProperty('token');
+    });
+});
