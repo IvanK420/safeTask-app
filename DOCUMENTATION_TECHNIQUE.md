@@ -603,3 +603,13 @@ npm test
 curl http://localhost:5000/api/health
 # {"status":"success","message":"API opérationnelle."}
 ```
+
+### Documentation Swagger UI
+
+Une fois le backend démarré, la documentation interactive est disponible à :
+
+```
+http://localhost:5000/api-docs
+```
+
+Elle permet de consulter tous les endpoints, les schémas de données, et de tester les requêtes directement depuis le navigateur (bouton **Authorize** pour saisir le JWT).
