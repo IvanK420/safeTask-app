@@ -3,6 +3,178 @@ const router = express.Router();
 const { Task } = require('../models');
 const authMiddleware = require('../middleware/auth');
 
+/**
+ * @swagger
+ * tags:
+ *   name: Tasks
+ *   description: Gestion des tâches (routes protégées par JWT)
+ */
+
+/**
+ * @swagger
+ * /api/tasks:
+ *   get:
+ *     summary: Récupérer toutes les tâches de l'utilisateur connecté
+ *     tags: [Tasks]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Liste des tâches
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Task'
+ *       401:
+ *         description: Token manquant
+ *         content:
+ *           application/json:
+ *             schema: { $ref: '#/components/schemas/Error' }
+ *       403:
+ *         description: Token invalide ou expiré
+ *         content:
+ *           application/json:
+ *             schema: { $ref: '#/components/schemas/Error' }
+ *
+ *   post:
+ *     summary: Créer une nouvelle tâche
+ *     tags: [Tasks]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [title]
+ *             properties:
+ *               title:
+ *                 type: string
+ *                 example: Préparer la réunion
+ *               description:
+ *                 type: string
+ *                 example: Rassembler les slides et les chiffres Q2
+ *     responses:
+ *       201:
+ *         description: Tâche créée
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Task'
+ *       400:
+ *         description: Titre manquant
+ *         content:
+ *           application/json:
+ *             schema: { $ref: '#/components/schemas/Error' }
+ *       401:
+ *         description: Token manquant
+ *         content:
+ *           application/json:
+ *             schema: { $ref: '#/components/schemas/Error' }
+ *       403:
+ *         description: Token invalide ou expiré
+ *         content:
+ *           application/json:
+ *             schema: { $ref: '#/components/schemas/Error' }
+ */
+
+/**
+ * @swagger
+ * /api/tasks/{id}:
+ *   put:
+ *     summary: Modifier une tâche
+ *     tags: [Tasks]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: integer }
+ *         description: Identifiant de la tâche
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               title:
+ *                 type: string
+ *                 example: Nouveau titre
+ *               description:
+ *                 type: string
+ *                 example: Description mise à jour
+ *               status:
+ *                 type: string
+ *                 enum: [A faire, En cours, Terminé]
+ *                 example: En cours
+ *     responses:
+ *       200:
+ *         description: Tâche mise à jour
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message: { type: string, example: Tâche mise à jour avec succès. }
+ *                 task:    { $ref: '#/components/schemas/Task' }
+ *       401:
+ *         description: Token manquant
+ *         content:
+ *           application/json:
+ *             schema: { $ref: '#/components/schemas/Error' }
+ *       403:
+ *         description: Token invalide, expiré ou tâche appartenant à un autre utilisateur
+ *         content:
+ *           application/json:
+ *             schema: { $ref: '#/components/schemas/Error' }
+ *       404:
+ *         description: Tâche non trouvée
+ *         content:
+ *           application/json:
+ *             schema: { $ref: '#/components/schemas/Error' }
+ *
+ *   delete:
+ *     summary: Supprimer une tâche
+ *     tags: [Tasks]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: integer }
+ *         description: Identifiant de la tâche
+ *     responses:
+ *       200:
+ *         description: Tâche supprimée
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message: { type: string, example: Tâche supprimée. }
+ *       401:
+ *         description: Token manquant
+ *         content:
+ *           application/json:
+ *             schema: { $ref: '#/components/schemas/Error' }
+ *       403:
+ *         description: Token invalide, expiré ou tâche appartenant à un autre utilisateur
+ *         content:
+ *           application/json:
+ *             schema: { $ref: '#/components/schemas/Error' }
+ *       404:
+ *         description: Tâche non trouvée
+ *         content:
+ *           application/json:
+ *             schema: { $ref: '#/components/schemas/Error' }
+ */
+
 // Toutes les routes de ce fichier utilisent le middleware de sécurité
 router.use(authMiddleware);
 

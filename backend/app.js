@@ -1,6 +1,8 @@
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
+const swaggerUi = require('swagger-ui-express');
+const swaggerSpec = require('./swagger');
 
 const authRoutes = require('./routes/auth');
 const taskRoutes = require('./routes/tasks');
@@ -8,9 +10,15 @@ const taskRoutes = require('./routes/tasks');
 const app = express();
 
 app.set('trust proxy', 1);
-app.use(helmet());
-app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
+app.use(helmet({
+    contentSecurityPolicy: false // nécessaire pour que Swagger UI charge ses assets
+}));
+app.use(cors({ origin: ['http://localhost:5173', 'http://localhost:5000'], credentials: true }));
 app.use(express.json());
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
+    customSiteTitle: 'SafeTask API Docs'
+}));
 
 app.use('/api/auth', authRoutes);
 app.use('/api/tasks', taskRoutes);

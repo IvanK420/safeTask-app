@@ -5,6 +5,109 @@ const jwt = require('jsonwebtoken');
 const rateLimit = require('express-rate-limit');
 const { User } = require('../models');
 
+/**
+ * @swagger
+ * tags:
+ *   name: Auth
+ *   description: Inscription et connexion
+ */
+
+/**
+ * @swagger
+ * /api/auth/register:
+ *   post:
+ *     summary: Créer un compte utilisateur
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [email, password]
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 example: user@example.com
+ *               password:
+ *                 type: string
+ *                 example: monMotDePasse
+ *     responses:
+ *       201:
+ *         description: Utilisateur créé avec succès
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message: { type: string, example: Utilisateur créé avec succès. }
+ *                 userId:  { type: integer, example: 1 }
+ *       400:
+ *         description: Champ manquant
+ *         content:
+ *           application/json:
+ *             schema: { $ref: '#/components/schemas/Error' }
+ *       409:
+ *         description: Email déjà utilisé
+ *         content:
+ *           application/json:
+ *             schema: { $ref: '#/components/schemas/Error' }
+ *       429:
+ *         description: Trop de tentatives — réessayer dans 15 minutes
+ *         content:
+ *           application/json:
+ *             schema: { $ref: '#/components/schemas/Error' }
+ */
+
+/**
+ * @swagger
+ * /api/auth/login:
+ *   post:
+ *     summary: Se connecter et obtenir un JWT
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [email, password]
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 example: user@example.com
+ *               password:
+ *                 type: string
+ *                 example: monMotDePasse
+ *     responses:
+ *       200:
+ *         description: Connexion réussie — retourne un JWT valable 2h
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message: { type: string, example: Connexion réussie. }
+ *                 token:   { type: string, example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9... }
+ *       400:
+ *         description: Champ manquant
+ *         content:
+ *           application/json:
+ *             schema: { $ref: '#/components/schemas/Error' }
+ *       401:
+ *         description: Identifiants incorrects
+ *         content:
+ *           application/json:
+ *             schema: { $ref: '#/components/schemas/Error' }
+ *       429:
+ *         description: Trop de tentatives — réessayer dans 15 minutes
+ *         content:
+ *           application/json:
+ *             schema: { $ref: '#/components/schemas/Error' }
+ */
+
 // ANSSI PA-079 : limiter les tentatives d'authentification (brute force)
 const authLimiter = rateLimit({
     windowMs: 15 * 60 * 1000, // fenêtre de 15 minutes
